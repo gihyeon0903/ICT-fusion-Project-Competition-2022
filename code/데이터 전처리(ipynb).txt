@@ -1,0 +1,221 @@
+import numpy as np
+
+one_data = np.array([])
+two_data = np.array([])
+three_data = np.array([])
+four_data = np.array([])
+five_data = np.array([])
+six_data = np.array([])
+seven_data = np.array([])
+eight_data = np.array([])
+
+f = open("textfiles/one.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    one_data = np.append(one_data, f_list)
+one_data = np.reshape(one_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/two.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    two_data = np.append(two_data, f_list)
+two_data = np.reshape(two_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/three.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    three_data = np.append(three_data, f_list)
+three_data = np.reshape(three_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/four.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    four_data = np.append(four_data, f_list)
+four_data = np.reshape(four_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/five.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    five_data = np.append(five_data, f_list)
+five_data = np.reshape(five_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/six.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    six_data = np.append(six_data, f_list)
+six_data = np.reshape(six_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/seven.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    seven_data = np.append(seven_data, f_list)
+seven_data = np.reshape(seven_data, (-1, 21, 3))
+f.close()
+
+f = open("textfiles/eight.txt", 'r')
+
+while True:
+    line = f.readline()
+    f_list = line.split()
+    if not line: break
+    f_list = np.array(f_list).astype(float)
+    eight_data = np.append(eight_data, f_list)
+eight_data = np.reshape(eight_data, (-1, 21, 3))
+f.close()
+
+import math
+
+finger_idx = {
+    "Thumb" : [1,2,3,4],
+    "Index_Finger" : [5,6,7,8],
+    "Middle_Finger" : [9,10,11,12],
+    "Ring_Finger" : [13,14,15,16],
+    "Pinky" : [17,18,19,20]
+}
+
+def deg_cal(landmark_datas):
+    theta = np.array([])
+    
+    # z좌표 없애는 기능
+    Z_delete = False
+    
+    if Z_delete:
+        print("z좌표 무시하고 계산")
+        k = np.reshape(landmark_datas, (-1,3))
+        k = k * (1,1,0)
+    
+    landmark_datas = np.reshape(landmark_datas, (-1,21,3))
+        
+    for landmark_data in landmark_datas:
+        idx = finger_idx["Thumb"]
+        v1 = landmark_data[idx[0]] - landmark_data[idx[1]]
+        v2 = landmark_data[idx[2]] - landmark_data[idx[1]]
+        v3 = landmark_data[idx[1]] - landmark_data[idx[2]]
+        v4 = landmark_data[idx[3]] - landmark_data[idx[2]]       
+        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v3*v4) / ( math.dist(v3,(0,0,0)) * math.dist(v4,(0,0,0)) + 1e-10 ) ) ) )
+        
+    
+        
+        idx = finger_idx["Index_Finger"]
+        v1 = landmark_data[idx[0]] - landmark_data[idx[1]]
+        v2 = landmark_data[idx[2]] - landmark_data[idx[1]]
+        v3 = landmark_data[idx[1]] - landmark_data[idx[2]]
+        v4 = landmark_data[idx[3]] - landmark_data[idx[2]]       
+        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v3*v4) / ( math.dist(v3,(0,0,0)) * math.dist(v4,(0,0,0)) + 1e-10 ) ) ) )
+        
+        idx = finger_idx["Middle_Finger"]
+        v1 = landmark_data[idx[0]] - landmark_data[idx[1]]
+        v2 = landmark_data[idx[2]] - landmark_data[idx[1]]
+        v3 = landmark_data[idx[1]] - landmark_data[idx[2]]
+        v4 = landmark_data[idx[3]] - landmark_data[idx[2]]       
+
+#         print(np.rad2deg(np.arccos(np.sum(v2 * v1)/math.dist(v1, (0,0,0))*math.dist(v2, (0,0,0)))))
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v3*v4) / ( math.dist(v3,(0,0,0)) * math.dist(v4,(0,0,0)) + 1e-10 ) ) ) )
+        
+        idx = finger_idx["Ring_Finger"]
+        v1 = landmark_data[idx[0]] - landmark_data[idx[1]]
+        v2 = landmark_data[idx[2]] - landmark_data[idx[1]]
+        v3 = landmark_data[idx[1]] - landmark_data[idx[2]]
+        v4 = landmark_data[idx[3]] - landmark_data[idx[2]]           
+
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v3*v4) / ( math.dist(v3,(0,0,0)) * math.dist(v4,(0,0,0)) + 1e-10 ) ) ) )
+        
+        idx = finger_idx["Pinky"]
+        v1 = landmark_data[idx[0]] - landmark_data[idx[1]]
+        v2 = landmark_data[idx[2]] - landmark_data[idx[1]]
+        v3 = landmark_data[idx[1]] - landmark_data[idx[2]]
+        v4 = landmark_data[idx[3]] - landmark_data[idx[2]]      
+        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v3*v4) / ( math.dist(v3,(0,0,0)) * math.dist(v4,(0,0,0)) + 1e-10 ) ) ) )
+        
+        #개별 손가락 사이의 각도 추가!
+        v1 = landmark_data[2] - landmark_data[1]
+        v2 = landmark_data[6] - landmark_data[5]        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        
+        
+        v1 = landmark_data[6] - landmark_data[5]
+        v2 = landmark_data[10] - landmark_data[9]        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+
+        v1 = landmark_data[10] - landmark_data[9]
+        v2 = landmark_data[14] - landmark_data[13]        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        
+        v1 = landmark_data[14] - landmark_data[13]
+        v2 = landmark_data[18] - landmark_data[7]        
+        theta = np.append(theta, np.rad2deg(np.arccos(np.sum(v1*v2) / ( math.dist(v1,(0,0,0)) * math.dist(v2,(0,0,0)) + 1e-10 ) ) ) )
+        
+    return theta.reshape(len(landmark_datas), -1)
+
+one_data = deg_cal(one_data)
+two_data = deg_cal(two_data)
+three_data = deg_cal(three_data)
+four_data = deg_cal(four_data)
+five_data = deg_cal(five_data)
+six_data = deg_cal(six_data)
+seven_data = deg_cal(seven_data)
+eight_data = deg_cal(eight_data)
+
+x_data = np.concatenate((one_data, two_data, three_data, four_data,
+                        five_data, six_data, seven_data, eight_data), axis=0)
+print(np.shape(x_data))
+
+data_len = 1000
+
+y_data = np.concatenate((np.zeros(data_len), np.zeros(data_len)+1, np.zeros(data_len)+2
+                        , np.zeros(data_len)+3, np.zeros(data_len)+4, np.zeros(data_len)+5
+                        , np.zeros(data_len)+6, np.zeros(data_len)+7), axis=0)
+print(np.shape(y_data))
+
+import pandas as pd
+import numpy as np
+
+df = pd.DataFrame(x_data, columns=['Thumb1', 'Thumb2', 'idx1', 'idx2', 'mid1', 'mid2', 'ring1', 'ring2', 'pinky1', 'pinky2'])
+
+df['label'] = y_data
+
+df
+
+df.to_csv("csvfiles/손재활운동2_with_z_position.csv", mode='w')

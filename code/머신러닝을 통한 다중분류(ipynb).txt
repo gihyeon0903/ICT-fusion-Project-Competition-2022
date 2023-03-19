@@ -1,0 +1,61 @@
+import keras.models
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv("csvfiles/손재활운동2_with_z_position.csv")
+
+df = df.drop('Unnamed: 0', axis=1)
+
+df.head()
+
+X = np.array(df[['Thumb1','Thumb2','idx1','idx2','mid1',
+       'mid2','ring1','ring2','pinky1','pinky2', 'angel1', 'angel2', 'angel3', 'angel4']])
+
+Y = pd.get_dummies(np.array(df['label'])).values
+
+print("X shape : ", np.shape(X), "y shape : ",np.shape(Y))
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, Y, 
+                                                    test_size=0.2, 
+                                                    random_state=1) 
+
+X_train.shape, X_test.shape, y_train.shape, y_test.shape
+
+from keras.models import Sequential
+from keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
+
+model = Sequential()
+
+model.add(Dense(64,input_shape=(14,),activation='relu'))
+model.add(Dense(64,activation='relu'))
+model.add(Dense(8,activation='softmax'))
+
+model.compile(loss='categorical_crossentropy', 
+              optimizer='Adam', 
+              metrics=['accuracy'])
+
+model.summary()
+
+hist = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=1000)
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+plt.figure(figsize=(12,8))
+plt.plot(hist.history['loss'])
+plt.plot(hist.history['val_loss'])
+plt.plot(hist.history['accuracy'])
+plt.plot(hist.history['val_loss'])
+plt.legend(['loss','val_loss', 'acc','val_acc'])
+plt.grid()
+plt.show()
+
+loss, accuracy = model.evaluate(X_test, y_test)
+print("Accuracy = {:.2f}".format(accuracy))
+
+from keras.models import load_model
+
+model.save('weights/손재활운동.h5')
